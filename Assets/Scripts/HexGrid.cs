@@ -15,11 +15,13 @@ public class HexGrid : MonoBehaviour
     [SerializeField]
     private Text _cellLabel;
 
+    private HexMesh _hexMesh;
     private Canvas _canvas;
     private HexCell[] _cells;
 
-    private void Awake()
+    public void Awake()
     {
+        _hexMesh = GetComponentInChildren<HexMesh>();
         _canvas = GetComponentInChildren<Canvas>();
         _cells = new HexCell[_height * _width];
 
@@ -30,6 +32,11 @@ public class HexGrid : MonoBehaviour
                 CreateCell(x, z, i++);
             }
         }
+    }
+
+    public void Start()
+    {
+        _hexMesh.Triangulate(_cells);
     }
 
     private void CreateCell(int x, int z, int index)
