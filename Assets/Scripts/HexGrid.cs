@@ -35,24 +35,24 @@ public class HexGrid : MonoBehaviour
     private void CreateCell(int x, int z, int index)
     {
         Vector3 position;
-        position.x = x * 10f;
+        position.x = (x + z * 0.5f - z / 2) * HexMetrics.HorizontalDistance;
         position.y = 0f;
-        position.z = z * 10f;
+        position.z = z * HexMetrics.VerticalDistance;
 
         HexCell cell = _cells[index] = Instantiate(_cellPrefab);
         cell.name = "Cell " + index;
         cell.transform.SetParent(transform, false);
         cell.transform.localPosition = position;
 
-        CreateLabel(position.x, position.z, index);
+        CreateLabel(position, x, z, index);
     }
 
-    private void CreateLabel(float posX, float posZ, int index)
+    private void CreateLabel(Vector3 position, int x, int z, int index)
     {
         Text label = Instantiate(_cellLabel);
         label.name = "Cell-Label " + index;
         label.rectTransform.SetParent(_canvas.transform, false);
-        label.rectTransform.anchoredPosition = new Vector2(posX, posZ);
-        label.text = posX + "\n" + posZ;
+        label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
+        label.text = x + "\n" + z;
     }
 }
