@@ -1,4 +1,5 @@
 ﻿using DefaultNamespace;
+using Microsoft.Win32.SafeHandles;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -56,8 +57,37 @@ public class HexGrid : MonoBehaviour
         cell.transform.localPosition = position;
         cell.Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
         cell.CellColor = _defaultColor;
-
+        ConnectNeighbours(cell, x, z, index);
         CreateLabel(cell, index);
+    }
+
+    private void ConnectNeighbours(HexCell cell, int x, int z, int index)
+    {
+        if (x > 0)
+        {
+            cell.SetNeighbour(HexDirection.W, _cells[index - 1]);
+        }
+        if (z > 0)
+        {
+            // this bitwise AND operation determines if z is an even number
+            if ((z & 1) == 0)
+            {
+                cell.SetNeighbour(HexDirection.SE, _cells[index - _width]);
+                if (x > 0)
+                {
+                    cell.SetNeighbour(HexDirection.SW, _cells[index - _width - 1]);
+                }
+            }
+            else
+            {
+                cell.SetNeighbour(HexDirection.SW, _cells[index - _width]);
+                if (x < _width - 1)
+                {
+                    cell.SetNeighbour(HexDirection.SE, _cells[index - _width + 1]);
+                }
+            }
+        }
+
     }
 
     private void CreateLabel(HexCell cell, int index)
