@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DefaultNamespace;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class HexGrid : MonoBehaviour
@@ -50,16 +51,18 @@ public class HexGrid : MonoBehaviour
         cell.name = "Cell " + index;
         cell.transform.SetParent(transform, false);
         cell.transform.localPosition = position;
+        cell.Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
 
-        CreateLabel(position, x, z, index);
+        CreateLabel(cell, index);
     }
 
-    private void CreateLabel(Vector3 position, int x, int z, int index)
+    private void CreateLabel(HexCell cell, int index)
     {
         Text label = Instantiate(_cellLabel);
         label.name = "Cell-Label " + index;
         label.rectTransform.SetParent(_canvas.transform, false);
-        label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
-        label.text = x + "\n" + z;
+        label.rectTransform.anchoredPosition =
+            new Vector2(cell.transform.localPosition.x, cell.transform.localPosition.z);
+        label.text = cell.Coordinates.ToStringOnSeparateLines();
     }
 }
