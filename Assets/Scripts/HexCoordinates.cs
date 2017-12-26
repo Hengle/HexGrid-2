@@ -47,5 +47,36 @@ namespace DefaultNamespace
         {
             return X + "\n" + Y + "\n" + Z;
         }
+
+        public static HexCoordinates FromPosition(Vector3 position)
+        {
+            float x = position.x / (HexMetrics.InnerRadius * 2F);
+            float offset = position.z / (HexMetrics.OuterRadius * 3F);
+            float y = -x;
+            x -= offset;
+            y -= offset;
+
+            int ix = Mathf.RoundToInt(x);
+            int iy = Mathf.RoundToInt(y);
+            int iz = Mathf.RoundToInt(-x -y);
+
+            // Rounding errors are possible to nearer we get to an edge
+            if (ix + iy + iz != 0)
+            {
+                float dX = Mathf.Abs(x - ix);
+                float dY = Mathf.Abs(y - iy);
+                float dZ = Mathf.Abs(-x -y - iz);
+
+                // find the "most rounded" coordinate and solve rounding issue by deriving it from the other 
+                // two values
+                if (dX > dY && dX > dZ) {
+                    ix = -iy - iz;
+                }
+                else if (dZ > dY) {
+                    iz = -ix - iy;
+                }
+            }
+            return new HexCoordinates(ix, iz);
+        }
     }
 }

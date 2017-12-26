@@ -16,6 +16,12 @@ public class HexGrid : MonoBehaviour
     [SerializeField]
     private Text _cellLabel;
 
+    [SerializeField]
+    private Color _defaultColor = Color.white;
+
+    [SerializeField]
+    private Color _touchedColor = Color.blue;
+
     private HexMesh _hexMesh;
     private Canvas _canvas;
     private HexCell[] _cells;
@@ -60,6 +66,7 @@ public class HexGrid : MonoBehaviour
         cell.transform.SetParent(transform, false);
         cell.transform.localPosition = position;
         cell.Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
+        cell.CellColor = _defaultColor;
 
         CreateLabel(cell, index);
     }
@@ -88,6 +95,10 @@ public class HexGrid : MonoBehaviour
     private void TouchCell(Vector3 position)
     {
         position = transform.InverseTransformPoint(position);
-        Debug.Log("Touched at " + position);
+        HexCoordinates coordinates = HexCoordinates.FromPosition(position);
+        int index = coordinates.X + coordinates.Z * _width + coordinates.Z / 2;
+        HexCell cell = _cells[index];
+        cell.CellColor = _touchedColor;
+        _hexMesh.Triangulate(_cells);
     }
 }
